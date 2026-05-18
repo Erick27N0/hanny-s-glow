@@ -111,7 +111,7 @@ function ProductPage() {
 
           {product.highlights.length > 0 && (
             <ul className="mt-5 space-y-1.5 text-sm">
-              {product.highlights.map((h) => (
+              {product.highlights.map((h: string) => (
                 <li key={h} className="flex items-center gap-2 text-foreground/80">
                   <Check className="h-4 w-4 text-primary" /> {h}
                 </li>
