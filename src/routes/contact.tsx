@@ -42,6 +42,7 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 function ContactPage() {
+  const submit = useServerFn(submitContact);
   const {
     register,
     handleSubmit,
@@ -50,13 +51,17 @@ function ContactPage() {
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (values: Values) => {
-    // TODO Phase 2: brancher au backend (Lovable Cloud)
-    await new Promise((r) => setTimeout(r, 500));
-    console.log("contact", values);
-    toast.success("Message envoyé", {
-      description: "Nous vous répondons rapidement.",
-    });
-    reset();
+    try {
+      await submit({ data: values });
+      toast.success("Message envoyé", {
+        description: "Nous vous répondons rapidement.",
+      });
+      reset();
+    } catch (err) {
+      toast.error("Envoi impossible", {
+        description: err instanceof Error ? err.message : "Réessayez plus tard.",
+      });
+    }
   };
 
   return (
