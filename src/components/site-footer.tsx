@@ -63,12 +63,12 @@ export function SiteFooter() {
               <Facebook className="h-5 w-5" />
             </a>
             <a
-              href={salonInfo.social.planity}
+              href={salonInfo.social.instagram}
               target="_blank"
               rel="noreferrer"
               className="text-xs uppercase tracking-wider text-muted-foreground hover:text-primary"
             >
-              Planity
+              Instagram
             </a>
           </div>
         </div>
