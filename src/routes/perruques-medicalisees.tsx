@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/accordion";
 import { StepsList } from "@/components/steps-list";
 import { wigFaq } from "@/data/faq";
+import { submitAppointment } from "@/lib/submissions.functions";
 import medicalImg from "@/assets/medical-wigs.jpg";
 
 export const Route = createFileRoute("/perruques-medicalisees")({
