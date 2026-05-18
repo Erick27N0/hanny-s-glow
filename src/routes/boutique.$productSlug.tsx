@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { getProductBySlug } from "@/data/products";
+import { submitProductInquiry } from "@/lib/submissions.functions";
 
 export const Route = createFileRoute("/boutique/$productSlug")({
   loader: ({ params }) => {
@@ -50,6 +52,7 @@ type Values = z.infer<typeof schema>;
 
 function ProductPage() {
   const { product } = Route.useLoaderData();
+  const submit = useServerFn(submitProductInquiry);
   const {
     register,
     handleSubmit,
@@ -58,13 +61,24 @@ function ProductPage() {
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (values: Values) => {
-    // TODO Phase 2: brancher au backend (Lovable Cloud)
-    await new Promise((r) => setTimeout(r, 500));
-    console.log("product inquiry", { product: product.slug, ...values });
-    toast.success("Demande envoyée", {
-      description: `Nous vous recontactons au sujet de « ${product.name} ».`,
-    });
-    reset();
+    try {
+      await submit({
+        data: {
+          ...values,
+          message: values.message ?? "",
+          productSlug: product.slug,
+          productName: product.name,
+        },
+      });
+      toast.success("Demande envoyée", {
+        description: `Nous vous recontactons au sujet de « ${product.name} ».`,
+      });
+      reset();
+    } catch (err) {
+      toast.error("Envoi impossible", {
+        description: err instanceof Error ? err.message : "Réessayez plus tard.",
+      });
+    }
   };
 
   return (

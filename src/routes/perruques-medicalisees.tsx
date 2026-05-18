@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/accordion";
 import { StepsList } from "@/components/steps-list";
 import { wigFaq } from "@/data/faq";
+import { submitAppointment } from "@/lib/submissions.functions";
 import medicalImg from "@/assets/medical-wigs.jpg";
 
 export const Route = createFileRoute("/perruques-medicalisees")({
@@ -60,6 +62,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 function WigsPage() {
+  const submit = useServerFn(submitAppointment);
   const {
     register,
     handleSubmit,
@@ -70,13 +73,17 @@ function WigsPage() {
   });
 
   const onSubmit = async (values: FormValues) => {
-    // TODO Phase 2: brancher au backend (Lovable Cloud)
-    await new Promise((r) => setTimeout(r, 600));
-    console.log("wig request", values);
-    toast.success("Demande envoyée", {
-      description: "Nous vous recontactons sous 24h ouvrées.",
-    });
-    reset();
+    try {
+      await submit({ data: values });
+      toast.success("Demande envoyée", {
+        description: "Nous vous recontactons sous 24h ouvrées.",
+      });
+      reset();
+    } catch (err) {
+      toast.error("Envoi impossible", {
+        description: err instanceof Error ? err.message : "Réessayez plus tard.",
+      });
+    }
   };
 
   return (
