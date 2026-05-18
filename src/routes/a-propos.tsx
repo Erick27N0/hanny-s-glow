@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Clock, Facebook } from "lucide-react";
+import { MapPin, Clock, Facebook, Instagram } from "lucide-react";
 import { salonInfo } from "@/data/salonInfo";
 import { CTASection } from "@/components/cta-section";
 
