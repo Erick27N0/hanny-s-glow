@@ -17,7 +17,7 @@ export const salonInfo = {
   ],
   social: {
     facebook: "https://facebook.com/",
-    planity: "https://www.planity.com/",
+    instagram: "https://www.instagram.com/",
   },
 };
 
