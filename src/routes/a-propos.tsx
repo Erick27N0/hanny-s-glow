@@ -94,14 +94,15 @@ function AboutPage() {
                 >
                   <Facebook className="h-4 w-4" /> Facebook
                 </a>
-                <a
-                  href={salonInfo.social.planity}
+                 <a
+                  href={salonInfo.social.instagram}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm uppercase tracking-wider text-muted-foreground hover:text-primary"
+                  className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
                 >
-                  Planity
+                  <Instagram className="h-4 w-4" /> Instagram
                 </a>
+               
               </div>
             </div>
           </div>
