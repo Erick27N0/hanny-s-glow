@@ -50,75 +50,6 @@ export type Database = {
         }
         Relationships: []
       }
-      bookings: {
-        Row: {
-          created_at: string
-          deposit_amount_cents: number
-          email: string
-          expires_at: string | null
-          full_name: string
-          id: string
-          notes: string | null
-          phone: string
-          slot_end: string
-          slot_start: string
-          status: Database["public"]["Enums"]["booking_status"]
-          stripe_session_id: string | null
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          deposit_amount_cents?: number
-          email: string
-          expires_at?: string | null
-          full_name: string
-          id?: string
-          notes?: string | null
-          phone: string
-          slot_end: string
-          slot_start: string
-          status?: Database["public"]["Enums"]["booking_status"]
-          stripe_session_id?: string | null
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          deposit_amount_cents?: number
-          email?: string
-          expires_at?: string | null
-          full_name?: string
-          id?: string
-          notes?: string | null
-          phone?: string
-          slot_end?: string
-          slot_start?: string
-          status?: Database["public"]["Enums"]["booking_status"]
-          stripe_session_id?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      closed_dates: {
-        Row: {
-          created_at: string
-          date: string
-          id: string
-          reason: string | null
-        }
-        Insert: {
-          created_at?: string
-          date: string
-          id?: string
-          reason?: string | null
-        }
-        Update: {
-          created_at?: string
-          date?: string
-          id?: string
-          reason?: string | null
-        }
-        Relationships: []
-      }
       contact_messages: {
         Row: {
           created_at: string
@@ -214,12 +145,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_busy_slots: {
-        Args: { from_date: string; to_date: string }
-        Returns: {
-          slot_start: string
-        }[]
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -230,11 +155,6 @@ export type Database = {
     }
     Enums: {
       app_role: "admin"
-      booking_status:
-        | "pending_payment"
-        | "confirmed"
-        | "cancelled"
-        | "completed"
       submission_status: "new" | "read" | "handled"
     }
     CompositeTypes: {
@@ -364,12 +284,6 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin"],
-      booking_status: [
-        "pending_payment",
-        "confirmed",
-        "cancelled",
-        "completed",
-      ],
       submission_status: ["new", "read", "handled"],
     },
   },
