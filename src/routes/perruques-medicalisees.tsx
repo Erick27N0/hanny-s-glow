@@ -34,48 +34,13 @@ export const Route = createFileRoute("/perruques-medicalisees")({
 
 const patientSteps = [
   { title: "Ordonnance", description: "Demandez à votre médecin une prescription de prothèse capillaire." },
-  { title: "Premier contact", description: "Appelez-nous ou envoyez le formulaire ci-dessous." },
+  { title: "Réservation", description: "Choisissez votre créneau en ligne en quelques clics." },
   { title: "Essayage", description: "Rendez-vous privé d'environ 1h dans un espace dédié." },
   { title: "Validation & pose", description: "Ajustement final, conseils d'entretien, pose offerte." },
   { title: "Remboursement", description: "Nous gérons le tiers payant Sécu (classe I) et votre mutuelle." },
 ];
 
-const formSchema = z.object({
-  fullName: z.string().trim().min(2, "Nom requis").max(100),
-  email: z.string().trim().email("Email invalide").max(255),
-  phone: z.string().trim().min(6, "Téléphone requis").max(30),
-  situation: z.string().trim().min(5, "Précisez votre situation").max(500),
-  oncologyCenter: z.string().trim().max(200).optional(),
-  preferredSlot: z.string().trim().max(200).optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 function WigsPage() {
-  const submit = useServerFn(submitAppointment);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-  });
-
-  const onSubmit = async (values: FormValues) => {
-    try {
-      await submit({ data: values });
-      toast.success("Demande envoyée", {
-        description: "Nous vous recontactons sous 24h ouvrées.",
-      });
-      reset();
-    } catch (err) {
-      toast.error("Envoi impossible", {
-        description: err instanceof Error ? err.message : "Réessayez plus tard.",
-      });
-    }
-  };
-
   return (
     <>
       <section className="container mx-auto grid gap-10 px-4 pt-14 md:grid-cols-2 md:items-center md:px-6 md:pt-20">
@@ -90,6 +55,16 @@ function WigsPage() {
             Nous accompagnons les patientes confrontées à une alopécie médicale.
             Tiers payant Sécu, mutuelles partenaires et essayage en espace privé.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild size="lg">
+              <Link to="/reservation">
+                <CalendarDays className="mr-1 h-4 w-4" /> Réserver un essayage
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/contact">Poser une question</Link>
+            </Button>
+          </div>
         </div>
         <img
           src={medicalImg}
