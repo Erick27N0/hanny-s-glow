@@ -142,57 +142,28 @@ function WigsPage() {
         </Accordion>
       </section>
 
-      {/* Form */}
+      {/* CTA Réservation */}
       <section id="rdv-perruque" className="bg-secondary/40 py-16 md:py-20">
-        <div className="container mx-auto grid gap-10 px-4 md:grid-cols-5 md:px-6">
-          <div className="md:col-span-2">
-            <h2 className="font-serif text-3xl md:text-4xl">Demander un rendez-vous</h2>
-            <p className="mt-3 text-muted-foreground">
-              Renseignez vos coordonnées et votre situation : nous vous recontactons
-              sous 24h ouvrées pour fixer un essayage.
-            </p>
-          </div>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-5 rounded-3xl border border-border bg-card p-7 md:col-span-3"
-            noValidate
-          >
-            <div className="grid gap-5 md:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label htmlFor="fullName">Nom complet *</Label>
-                <Input id="fullName" {...register("fullName")} aria-invalid={!!errors.fullName} />
-                {errors.fullName && <p className="text-xs text-destructive">{errors.fullName.message}</p>}
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="phone">Téléphone *</Label>
-                <Input id="phone" type="tel" {...register("phone")} aria-invalid={!!errors.phone} />
-                {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email *</Label>
-              <Input id="email" type="email" {...register("email")} aria-invalid={!!errors.email} />
-              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="oncologyCenter">Centre d'oncologie (optionnel)</Label>
-              <Input id="oncologyCenter" {...register("oncologyCenter")} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="preferredSlot">Créneau souhaité (optionnel)</Label>
-              <Input id="preferredSlot" placeholder="Ex : mardi après-midi" {...register("preferredSlot")} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="situation">Votre situation *</Label>
-              <Textarea id="situation" rows={4} {...register("situation")} aria-invalid={!!errors.situation} />
-              {errors.situation && <p className="text-xs text-destructive">{errors.situation.message}</p>}
-            </div>
-            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Envoi..." : "Envoyer ma demande"}
+        <div className="container mx-auto max-w-3xl px-4 text-center md:px-6">
+          <CalendarDays className="mx-auto h-10 w-10 text-primary" />
+          <h2 className="mt-4 font-serif text-3xl md:text-4xl">
+            Réservez votre essayage en ligne
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+            Choisissez votre créneau d'une heure, du mardi au samedi entre 10h
+            et 18h. Le salon valide votre rendez-vous sous 24h ouvrées.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg">
+              <Link to="/reservation">Voir les créneaux disponibles</Link>
             </Button>
-          </form>
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/contact">Une question ? Nous contacter</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </>
   );
 }
+
