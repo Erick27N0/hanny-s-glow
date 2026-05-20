@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as PerruquesMedicaliseesRouteImport } from './routes/perruques-medicalisees'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CoiffureAfroRouteImport } from './routes/coiffure-afro'
@@ -19,6 +20,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as BoutiqueProductSlugRouteImport } from './routes/boutique.$productSlug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
+const ReservationRoute = ReservationRouteImport.update({
+  id: '/reservation',
+  path: '/reservation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerruquesMedicaliseesRoute = PerruquesMedicaliseesRouteImport.update({
   id: '/perruques-medicalisees',
   path: '/perruques-medicalisees',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/coiffure-afro': typeof CoiffureAfroRoute
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
+  '/reservation': typeof ReservationRoute
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/coiffure-afro': typeof CoiffureAfroRoute
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
+  '/reservation': typeof ReservationRoute
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/coiffure-afro': typeof CoiffureAfroRoute
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
+  '/reservation': typeof ReservationRoute
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/coiffure-afro'
     | '/contact'
     | '/perruques-medicalisees'
+    | '/reservation'
     | '/admin/login'
     | '/boutique/$productSlug'
     | '/admin/'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/coiffure-afro'
     | '/contact'
     | '/perruques-medicalisees'
+    | '/reservation'
     | '/admin/login'
     | '/boutique/$productSlug'
     | '/admin'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/coiffure-afro'
     | '/contact'
     | '/perruques-medicalisees'
+    | '/reservation'
     | '/admin/login'
     | '/boutique/$productSlug'
     | '/admin/'
@@ -142,12 +154,20 @@ export interface RootRouteChildren {
   CoiffureAfroRoute: typeof CoiffureAfroRoute
   ContactRoute: typeof ContactRoute
   PerruquesMedicaliseesRoute: typeof PerruquesMedicaliseesRoute
+  ReservationRoute: typeof ReservationRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reservation': {
+      id: '/reservation'
+      path: '/reservation'
+      fullPath: '/reservation'
+      preLoaderRoute: typeof ReservationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perruques-medicalisees': {
       id: '/perruques-medicalisees'
       path: '/perruques-medicalisees'
@@ -233,19 +253,10 @@ const rootRouteChildren: RootRouteChildren = {
   CoiffureAfroRoute: CoiffureAfroRoute,
   ContactRoute: ContactRoute,
   PerruquesMedicaliseesRoute: PerruquesMedicaliseesRoute,
+  ReservationRoute: ReservationRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -1,0 +1,358 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+import { CalendarDays, Check, ShieldCheck } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import {
+  getBusySlots,
+  getClosedDates,
+  createBooking,
+} from "@/lib/booking.functions";
+
+export const Route = createFileRoute("/reservation")({
+  head: () => ({
+    meta: [
+      { title: "Réserver un essayage — Perruques médicalisées Hanny Tresse" },
+      {
+        name: "description",
+        content:
+          "Choisissez votre créneau pour un essayage privé de perruque médicalisée à Perpignan. Mardi à samedi, 10h-18h.",
+      },
+      {
+        property: "og:title",
+        content: "Réserver un essayage — Hanny Tresse Perpignan",
+      },
+      {
+        property: "og:description",
+        content:
+          "Calendrier en ligne pour votre essayage de perruque médicalisée.",
+      },
+    ],
+  }),
+  component: ReservationPage,
+});
+
+// ===== Slot helpers =====
+const HOURS = [10, 11, 12, 13, 14, 15, 16, 17]; // créneaux toutes les heures pleines, 10h-17h (dernier RDV à 17h, fin 18h)
+
+function isOpenDay(d: Date) {
+  const day = d.getDay(); // 0=dim … 6=sam
+  return day >= 2 && day <= 6; // mardi -> samedi
+}
+
+function toLocalDateStr(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function buildSlotDate(date: Date, hour: number) {
+  const d = new Date(date);
+  d.setHours(hour, 0, 0, 0);
+  return d;
+}
+
+// ===== Form schema =====
+const formSchema = z.object({
+  fullName: z.string().trim().min(2, "Nom requis").max(100),
+  email: z.string().trim().email("Email invalide").max(255),
+  phone: z.string().trim().min(6, "Téléphone requis").max(30),
+  notes: z.string().trim().max(1000).optional(),
+});
+type FormValues = z.infer<typeof formSchema>;
+
+function ReservationPage() {
+  const fetchBusy = useServerFn(getBusySlots);
+  const fetchClosed = useServerFn(getClosedDates);
+  const submit = useServerFn(createBooking);
+
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+  const maxDate = useMemo(() => {
+    const d = new Date(today);
+    d.setDate(d.getDate() + 45);
+    return d;
+  }, [today]);
+
+  // Range to query : aujourd'hui → +45j
+  const range = useMemo(
+    () => ({ from: toLocalDateStr(today), to: toLocalDateStr(maxDate) }),
+    [today, maxDate]
+  );
+
+  const { data: busyData } = useQuery({
+    queryKey: ["busy-slots", range.from, range.to],
+    queryFn: () => fetchBusy({ data: range }),
+  });
+  const { data: closedData } = useQuery({
+    queryKey: ["closed-dates"],
+    queryFn: () => fetchClosed(),
+  });
+
+  const busySet = useMemo(
+    () => new Set((busyData?.busy ?? []).map((s) => new Date(s).getTime())),
+    [busyData]
+  );
+  const closedSet = useMemo(
+    () => new Set((closedData?.dates ?? []).map((d) => d.date)),
+    [closedData]
+  );
+
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedSlot, setSelectedSlot] = useState<Date | undefined>(undefined);
+  const [confirmed, setConfirmed] = useState(false);
+
+  const slotsForDay = useMemo(() => {
+    if (!selectedDate) return [];
+    return HOURS.map((h) => {
+      const d = buildSlotDate(selectedDate, h);
+      const isPast = d.getTime() < Date.now() + 60 * 60 * 1000;
+      const isBusy = busySet.has(d.getTime());
+      return { date: d, hour: h, disabled: isPast || isBusy, isBusy };
+    });
+  }, [selectedDate, busySet]);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({ resolver: zodResolver(formSchema) });
+
+  const onSubmit = async (values: FormValues) => {
+    if (!selectedSlot) {
+      toast.error("Choisissez un créneau avant d'envoyer.");
+      return;
+    }
+    try {
+      await submit({
+        data: {
+          slotStart: selectedSlot.toISOString(),
+          fullName: values.fullName,
+          email: values.email,
+          phone: values.phone,
+          notes: values.notes || "",
+        },
+      });
+      setConfirmed(true);
+      reset();
+    } catch (err) {
+      toast.error("Réservation impossible", {
+        description: err instanceof Error ? err.message : "Réessayez plus tard.",
+      });
+    }
+  };
+
+  const disabledDays = (d: Date) => {
+    if (d < today) return true;
+    if (d > maxDate) return true;
+    if (!isOpenDay(d)) return true;
+    if (closedSet.has(toLocalDateStr(d))) return true;
+    return false;
+  };
+
+  if (confirmed && selectedSlot) {
+    return (
+      <section className="container mx-auto px-4 py-20 md:px-6">
+        <div className="mx-auto max-w-xl rounded-3xl border border-border bg-card p-10 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <Check className="h-7 w-7" />
+          </div>
+          <h1 className="mt-5 font-serif text-3xl">Demande enregistrée</h1>
+          <p className="mt-3 text-muted-foreground">
+            Votre demande pour le{" "}
+            <strong>
+              {selectedSlot.toLocaleDateString("fr-FR", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              })}{" "}
+              à{" "}
+              {selectedSlot.toLocaleTimeString("fr-FR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </strong>{" "}
+            a bien été reçue. Nous vous recontactons sous 24h ouvrées pour
+            confirmer votre rendez-vous.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Button asChild>
+              <Link to="/perruques-medicalisees">Retour</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/">Accueil</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="container mx-auto px-4 py-14 md:px-6 md:py-20">
+      <div className="mx-auto max-w-4xl">
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          <CalendarDays className="h-3 w-3 text-primary" /> Réservation en ligne
+        </span>
+        <h1 className="mt-4 font-serif text-3xl md:text-5xl">
+          Réservez votre essayage perruque médicalisée
+        </h1>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Choisissez un créneau d'1 heure, du mardi au samedi entre 10h et 18h.
+          Votre demande est validée par le salon sous 24h ouvrées.
+        </p>
+
+        <div className="mt-10 grid gap-8 md:grid-cols-2">
+          {/* Calendrier + créneaux */}
+          <div className="rounded-3xl border border-border bg-card p-5">
+            <h2 className="font-serif text-lg">1. Choisissez une date</h2>
+            <div className="mt-3 flex justify-center">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={(d) => {
+                  setSelectedDate(d ?? undefined);
+                  setSelectedSlot(undefined);
+                }}
+                disabled={disabledDays}
+                className={cn("p-0 pointer-events-auto")}
+              />
+            </div>
+
+            {selectedDate && (
+              <div className="mt-5 border-t border-border pt-5">
+                <h3 className="font-serif text-base">
+                  2. Choisissez un horaire
+                </h3>
+                <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                  {slotsForDay.map((s) => {
+                    const active = selectedSlot?.getTime() === s.date.getTime();
+                    return (
+                      <button
+                        key={s.hour}
+                        type="button"
+                        disabled={s.disabled}
+                        onClick={() => setSelectedSlot(s.date)}
+                        className={cn(
+                          "rounded-lg border px-3 py-2 text-sm transition",
+                          s.disabled &&
+                            "cursor-not-allowed border-border bg-muted/40 text-muted-foreground line-through opacity-50",
+                          !s.disabled &&
+                            !active &&
+                            "border-border bg-background hover:border-primary",
+                          active &&
+                            "border-primary bg-primary text-primary-foreground"
+                        )}
+                      >
+                        {String(s.hour).padStart(2, "0")}:00
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Créneaux barrés = déjà réservés ou trop proches.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Formulaire */}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5 rounded-3xl border border-border bg-card p-5"
+            noValidate
+          >
+            <h2 className="font-serif text-lg">3. Vos coordonnées</h2>
+            {selectedSlot ? (
+              <p className="rounded-lg bg-secondary/60 px-3 py-2 text-sm">
+                Créneau sélectionné :{" "}
+                <strong>
+                  {selectedSlot.toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                  })}{" "}
+                  à{" "}
+                  {selectedSlot.toLocaleTimeString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </strong>
+              </p>
+            ) : (
+              <p className="rounded-lg border border-dashed border-border px-3 py-2 text-sm text-muted-foreground">
+                Sélectionnez d'abord une date et un horaire.
+              </p>
+            )}
+
+            <div className="space-y-1.5">
+              <Label htmlFor="fullName">Nom complet *</Label>
+              <Input id="fullName" {...register("fullName")} aria-invalid={!!errors.fullName} />
+              {errors.fullName && (
+                <p className="text-xs text-destructive">{errors.fullName.message}</p>
+              )}
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="email">Email *</Label>
+                <Input id="email" type="email" {...register("email")} aria-invalid={!!errors.email} />
+                {errors.email && (
+                  <p className="text-xs text-destructive">{errors.email.message}</p>
+                )}
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="phone">Téléphone *</Label>
+                <Input id="phone" type="tel" {...register("phone")} aria-invalid={!!errors.phone} />
+                {errors.phone && (
+                  <p className="text-xs text-destructive">{errors.phone.message}</p>
+                )}
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="notes">Message (optionnel)</Label>
+              <Textarea
+                id="notes"
+                rows={3}
+                placeholder="Centre d'oncologie, type de traitement, questions…"
+                {...register("notes")}
+              />
+            </div>
+
+            <div className="flex items-start gap-2 rounded-lg bg-secondary/40 p-3 text-xs text-muted-foreground">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+              <span>
+                Vos informations sont confidentielles et utilisées uniquement
+                pour organiser votre essayage.
+              </span>
+            </div>
+
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={isSubmitting || !selectedSlot}
+            >
+              {isSubmitting ? "Envoi…" : "Confirmer la réservation"}
+            </Button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}

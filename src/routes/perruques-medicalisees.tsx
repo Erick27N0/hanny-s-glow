@@ -1,15 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "sonner";
-import { ShieldCheck } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { CalendarDays, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import {
   Accordion,
@@ -17,9 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { StepsList } from "@/components/steps-list";
 import { wigFaq } from "@/data/faq";
-import { submitAppointment } from "@/lib/submissions.functions";
 import medicalImg from "@/assets/medical-wigs.jpg";
 
 export const Route = createFileRoute("/perruques-medicalisees")({
@@ -44,48 +34,13 @@ export const Route = createFileRoute("/perruques-medicalisees")({
 
 const patientSteps = [
   { title: "Ordonnance", description: "Demandez à votre médecin une prescription de prothèse capillaire." },
-  { title: "Premier contact", description: "Appelez-nous ou envoyez le formulaire ci-dessous." },
+  { title: "Réservation", description: "Choisissez votre créneau en ligne en quelques clics." },
   { title: "Essayage", description: "Rendez-vous privé d'environ 1h dans un espace dédié." },
   { title: "Validation & pose", description: "Ajustement final, conseils d'entretien, pose offerte." },
   { title: "Remboursement", description: "Nous gérons le tiers payant Sécu (classe I) et votre mutuelle." },
 ];
 
-const formSchema = z.object({
-  fullName: z.string().trim().min(2, "Nom requis").max(100),
-  email: z.string().trim().email("Email invalide").max(255),
-  phone: z.string().trim().min(6, "Téléphone requis").max(30),
-  situation: z.string().trim().min(5, "Précisez votre situation").max(500),
-  oncologyCenter: z.string().trim().max(200).optional(),
-  preferredSlot: z.string().trim().max(200).optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 function WigsPage() {
-  const submit = useServerFn(submitAppointment);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-  });
-
-  const onSubmit = async (values: FormValues) => {
-    try {
-      await submit({ data: values });
-      toast.success("Demande envoyée", {
-        description: "Nous vous recontactons sous 24h ouvrées.",
-      });
-      reset();
-    } catch (err) {
-      toast.error("Envoi impossible", {
-        description: err instanceof Error ? err.message : "Réessayez plus tard.",
-      });
-    }
-  };
-
   return (
     <>
       <section className="container mx-auto grid gap-10 px-4 pt-14 md:grid-cols-2 md:items-center md:px-6 md:pt-20">
@@ -100,6 +55,16 @@ function WigsPage() {
             Nous accompagnons les patientes confrontées à une alopécie médicale.
             Tiers payant Sécu, mutuelles partenaires et essayage en espace privé.
           </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild size="lg">
+              <Link to="/reservation">
+                <CalendarDays className="mr-1 h-4 w-4" /> Réserver un essayage
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/contact">Poser une question</Link>
+            </Button>
+          </div>
         </div>
         <img
           src={medicalImg}
@@ -177,57 +142,28 @@ function WigsPage() {
         </Accordion>
       </section>
 
-      {/* Form */}
+      {/* CTA Réservation */}
       <section id="rdv-perruque" className="bg-secondary/40 py-16 md:py-20">
-        <div className="container mx-auto grid gap-10 px-4 md:grid-cols-5 md:px-6">
-          <div className="md:col-span-2">
-            <h2 className="font-serif text-3xl md:text-4xl">Demander un rendez-vous</h2>
-            <p className="mt-3 text-muted-foreground">
-              Renseignez vos coordonnées et votre situation : nous vous recontactons
-              sous 24h ouvrées pour fixer un essayage.
-            </p>
-          </div>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-5 rounded-3xl border border-border bg-card p-7 md:col-span-3"
-            noValidate
-          >
-            <div className="grid gap-5 md:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label htmlFor="fullName">Nom complet *</Label>
-                <Input id="fullName" {...register("fullName")} aria-invalid={!!errors.fullName} />
-                {errors.fullName && <p className="text-xs text-destructive">{errors.fullName.message}</p>}
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="phone">Téléphone *</Label>
-                <Input id="phone" type="tel" {...register("phone")} aria-invalid={!!errors.phone} />
-                {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email *</Label>
-              <Input id="email" type="email" {...register("email")} aria-invalid={!!errors.email} />
-              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="oncologyCenter">Centre d'oncologie (optionnel)</Label>
-              <Input id="oncologyCenter" {...register("oncologyCenter")} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="preferredSlot">Créneau souhaité (optionnel)</Label>
-              <Input id="preferredSlot" placeholder="Ex : mardi après-midi" {...register("preferredSlot")} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="situation">Votre situation *</Label>
-              <Textarea id="situation" rows={4} {...register("situation")} aria-invalid={!!errors.situation} />
-              {errors.situation && <p className="text-xs text-destructive">{errors.situation.message}</p>}
-            </div>
-            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Envoi..." : "Envoyer ma demande"}
+        <div className="container mx-auto max-w-3xl px-4 text-center md:px-6">
+          <CalendarDays className="mx-auto h-10 w-10 text-primary" />
+          <h2 className="mt-4 font-serif text-3xl md:text-4xl">
+            Réservez votre essayage en ligne
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+            Choisissez votre créneau d'une heure, du mardi au samedi entre 10h
+            et 18h. Le salon valide votre rendez-vous sous 24h ouvrées.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg">
+              <Link to="/reservation">Voir les créneaux disponibles</Link>
             </Button>
-          </form>
+            <Button variant="outline" size="lg" asChild>
+              <Link to="/contact">Une question ? Nous contacter</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </>
   );
 }
+
