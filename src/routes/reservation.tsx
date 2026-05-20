@@ -231,9 +231,6 @@ function ReservationPage() {
                   setSelectedSlot(undefined);
                 }}
                 disabled={disabledDays}
-                fromDate={today}
-                toDate={maxDate}
-                locale={undefined}
                 className={cn("p-0 pointer-events-auto")}
               />
             </div>
