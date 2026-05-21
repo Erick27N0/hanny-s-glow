@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarDays, ShieldCheck } from "lucide-react";
+import { CalendarDays, ShieldCheck, ChevronRight } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -10,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { wigFaq } from "@/data/faq";
+import { getMedicalWigs } from "@/data/products";
 import medicalImg from "@/assets/medical-wigs.jpg";
 
 export const Route = createFileRoute("/perruques-medicalisees")({
