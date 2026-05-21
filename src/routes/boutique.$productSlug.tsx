@@ -81,14 +81,26 @@ function ProductPage() {
     }
   };
 
+  const isMedical = product.category === "Perruques médicales";
+  const reste = Math.max(0, product.price - 350);
+
   return (
     <section className="container mx-auto px-4 py-10 md:px-6 md:py-16">
-      <Link
-        to="/boutique"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
-      >
-        <ChevronLeft className="h-4 w-4" /> Retour à la boutique
-      </Link>
+      {isMedical ? (
+        <Link
+          to="/perruques-medicalisees"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+        >
+          <ChevronLeft className="h-4 w-4" /> Retour aux perruques médicales
+        </Link>
+      ) : (
+        <Link
+          to="/boutique"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary"
+        >
+          <ChevronLeft className="h-4 w-4" /> Retour à la boutique
+        </Link>
+      )}
 
       <div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-14">
         <div className="overflow-hidden rounded-3xl bg-secondary">
@@ -112,6 +124,20 @@ function ProductPage() {
             </span>
           </div>
 
+          {isMedical && (
+            <div className="mt-4 flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm">
+              <ShieldCheck className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
+              <div>
+                <p className="font-medium text-foreground">Prise en charge Sécurité sociale</p>
+                <p className="mt-1 text-muted-foreground">
+                  Classe I : 350 € remboursés à 100% sur ordonnance. Reste à charge
+                  estimé : <span className="font-medium text-foreground">~{reste} €</span>{" "}
+                  (avant mutuelle).
+                </p>
+              </div>
+            </div>
+          )}
+
           <dl className="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-border bg-card p-5 text-sm">
             <div>
               <dt className="text-muted-foreground">Type de cheveux</dt>
@@ -133,15 +159,32 @@ function ProductPage() {
             </ul>
           )}
 
+          {isMedical && (
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              <Button asChild size="lg">
+                <Link to="/reservation">
+                  <CalendarDays className="mr-1 h-4 w-4" /> Réserver un essayage
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg">
+                <a href="#question-modele">Poser une question</a>
+              </Button>
+            </div>
+          )}
+
           <form
+            id="question-modele"
             onSubmit={handleSubmit(onSubmit)}
             className="mt-8 space-y-4 rounded-2xl border border-border bg-card p-6"
             noValidate
           >
-            <p className="font-serif text-lg">Demander ce produit</p>
+            <p className="font-serif text-lg">
+              {isMedical ? "Une question sur ce modèle ?" : "Demander ce produit"}
+            </p>
             <p className="-mt-2 text-sm text-muted-foreground">
-              Parcours d'achat en mode test : envoyez votre demande, nous vous
-              recontactons pour valider la commande.
+              {isMedical
+                ? "Notre équipe vous répond sous 24h ouvrées. Pour un essayage, réservez directement un créneau ci-dessus."
+                : "Parcours d'achat en mode test : envoyez votre demande, nous vous recontactons pour valider la commande."}
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
@@ -165,7 +208,11 @@ function ProductPage() {
               <Textarea id="message" rows={3} {...register("message")} />
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Envoi..." : "Commander ce produit"}
+              {isSubmitting
+                ? "Envoi..."
+                : isMedical
+                  ? "Envoyer ma question"
+                  : "Commander ce produit"}
             </Button>
           </form>
         </div>
