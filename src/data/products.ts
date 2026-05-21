@@ -47,6 +47,48 @@ export const products: Product[] = [
     highlights: ["Éligible Sécu", "Texture afro", "Monture hypoallergénique"],
   },
   {
+    slug: "perruque-medicale-courte-carre",
+    name: "Perruque médicale — Carré court",
+    category: "Perruques médicales",
+    shortDescription: "Carré lisse intemporel, léger et discret.",
+    description:
+      "Perruque médicale carré court en cheveux naturels, monture lace front pour une ligne de front naturelle. Idéale pour un porter quotidien léger et facile à entretenir.",
+    hairType: "Cheveux naturels Remy",
+    length: "25 cm",
+    price: 590,
+    inStock: true,
+    image: wig1,
+    highlights: ["Éligible Sécu", "Lace front", "Léger", "Entretien facile"],
+  },
+  {
+    slug: "perruque-medicale-longue-frange",
+    name: "Perruque médicale — Longue avec frange",
+    category: "Perruques médicales",
+    shortDescription: "Longueur féminine, frange dégradée naturelle.",
+    description:
+      "Perruque médicale longue avec frange, cheveux naturels Remy, monture confort respirante. Coupe dégradée moderne pour un rendu très naturel au quotidien.",
+    hairType: "Cheveux naturels Remy",
+    length: "45 cm",
+    price: 750,
+    inStock: true,
+    image: wig2,
+    highlights: ["Éligible Sécu", "Frange dégradée", "Monture respirante", "Pose offerte"],
+  },
+  {
+    slug: "perruque-medicale-chatain-miel",
+    name: "Perruque médicale — Châtain miel mi-longue",
+    category: "Perruques médicales",
+    shortDescription: "Coloration châtain miel lumineuse, mi-longue.",
+    description:
+      "Perruque médicale mi-longue, fibres premium coloration châtain miel avec reflets dorés. Monture hypoallergénique, idéale pour un rendu chaleureux et lumineux.",
+    hairType: "Fibres premium",
+    length: "35 cm",
+    price: 560,
+    inStock: true,
+    image: wig1,
+    highlights: ["Éligible Sécu", "Reflets dorés", "Monture hypoallergénique"],
+  },
+  {
     slug: "extensions-wavy-bundles",
     name: "Extensions wavy — Lot 3 bundles",
     category: "Extensions",
@@ -106,6 +148,9 @@ export const products: Product[] = [
 
 export const getProductBySlug = (slug: string) =>
   products.find((p) => p.slug === slug);
+
+export const getMedicalWigs = () =>
+  products.filter((p) => p.category === "Perruques médicales");
 
 export const productCategories = [
   "Toutes",

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarDays, ShieldCheck } from "lucide-react";
+import { CalendarDays, ShieldCheck, ChevronRight } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -10,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { wigFaq } from "@/data/faq";
+import { getMedicalWigs } from "@/data/products";
 import medicalImg from "@/assets/medical-wigs.jpg";
 
 export const Route = createFileRoute("/perruques-medicalisees")({
@@ -100,6 +102,51 @@ function WigsPage() {
               remboursés, complément possible par la mutuelle.
             </p>
           </Card>
+        </div>
+      </section>
+
+      {/* Catalogue */}
+      <section id="modeles" className="container mx-auto px-4 pb-4 md:px-6">
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-3xl md:text-4xl">Nos modèles disponibles</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Prix indicatifs avant remboursement Sécurité sociale (classe I : −350 €).
+            </p>
+          </div>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {getMedicalWigs().map((p) => (
+            <Link
+              key={p.slug}
+              to="/boutique/$productSlug"
+              params={{ productSlug: p.slug }}
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-lg"
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-secondary">
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="space-y-2 p-5">
+                <Badge variant="secondary" className="text-[10px]">
+                  <ShieldCheck className="mr-1 h-3 w-3" /> Éligible Sécu
+                </Badge>
+                <h3 className="font-serif text-lg leading-tight">{p.name}</h3>
+                <p className="text-sm text-muted-foreground">{p.shortDescription}</p>
+                <div className="flex items-baseline justify-between pt-2">
+                  <span className="font-serif text-xl text-primary">{p.price} €</span>
+                  <span className="text-xs text-muted-foreground">{p.length}</span>
+                </div>
+                <div className="flex items-center gap-1 pt-1 text-xs font-medium text-primary">
+                  Voir la fiche <ChevronRight className="h-3 w-3" />
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
