@@ -149,6 +149,9 @@ export const products: Product[] = [
 export const getProductBySlug = (slug: string) =>
   products.find((p) => p.slug === slug);
 
+export const getMedicalWigs = () =>
+  products.filter((p) => p.category === "Perruques médicales");
+
 export const productCategories = [
   "Toutes",
   "Perruques médicales",
