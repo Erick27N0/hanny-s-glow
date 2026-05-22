@@ -237,6 +237,84 @@ function ProductPage() {
           </form>
         </div>
       </div>
+
+      {product.medical && (
+        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <UserCheck className="h-6 w-6 text-primary" />
+            <h2 className="mt-3 font-serif text-lg">Pour qui ?</h2>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              {product.medical.bestFor.map((b) => (
+                <li key={b} className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <Sparkles className="h-6 w-6 text-primary" />
+            <h2 className="mt-3 font-serif text-lg">Morphologies adaptées</h2>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {product.medical.faceShapes.map((f) => (
+                <Badge key={f} variant="secondary">{f}</Badge>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Ajustement final personnalisé en cabine selon votre visage.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <Package className="h-6 w-6 text-primary" />
+            <h2 className="mt-3 font-serif text-lg">Inclus dans la prestation</h2>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              {product.medical.included.map((i) => (
+                <li key={i} className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                  <span>{i}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <Droplets className="h-6 w-6 text-primary" />
+            <h2 className="mt-3 font-serif text-lg">Conseils d'entretien</h2>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              {product.medical.care.map((c) => (
+                <li key={c} className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {product.medical && (
+        <div className="mt-12 flex flex-col items-start gap-4 rounded-3xl border border-primary/20 bg-primary/5 p-6 md:flex-row md:items-center md:justify-between md:p-8">
+          <div className="flex items-start gap-4">
+            <HeartHandshake className="h-8 w-8 flex-shrink-0 text-primary" />
+            <div>
+              <h2 className="font-serif text-xl">Pas encore sûre de votre choix ?</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Réservez un essayage privé d'1h — sans engagement. Nous comparons
+                plusieurs modèles ensemble pour trouver le vôtre.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg">
+              <Link to="/reservation">
+                <CalendarDays className="mr-1 h-4 w-4" /> Réserver un essayage
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link to="/perruques-medicalisees">Voir les autres modèles</Link>
+            </Button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
