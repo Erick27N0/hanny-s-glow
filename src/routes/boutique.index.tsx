@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { products, productCategories } from "@/data/products";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/boutique")({
+export const Route = createFileRoute("/boutique/")({
   head: () => ({
     meta: [
       { title: "Boutique — Perruques, extensions & soins | Hanny Tresse" },
