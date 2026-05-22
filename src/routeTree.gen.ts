@@ -13,9 +13,9 @@ import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as PerruquesMedicaliseesRouteImport } from './routes/perruques-medicalisees'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CoiffureAfroRouteImport } from './routes/coiffure-afro'
-import { Route as BoutiqueRouteImport } from './routes/boutique'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as BoutiqueProductSlugRouteImport } from './routes/boutique.$productSlug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -40,11 +40,6 @@ const CoiffureAfroRoute = CoiffureAfroRouteImport.update({
   path: '/coiffure-afro',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BoutiqueRoute = BoutiqueRouteImport.update({
-  id: '/boutique',
-  path: '/boutique',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AProposRoute = AProposRouteImport.update({
   id: '/a-propos',
   path: '/a-propos',
@@ -55,15 +50,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BoutiqueIndexRoute = BoutiqueIndexRouteImport.update({
+  id: '/boutique/',
+  path: '/boutique/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BoutiqueProductSlugRoute = BoutiqueProductSlugRouteImport.update({
-  id: '/$productSlug',
-  path: '/$productSlug',
-  getParentRoute: () => BoutiqueRoute,
+  id: '/boutique/$productSlug',
+  path: '/boutique/$productSlug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
@@ -74,7 +74,6 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/boutique': typeof BoutiqueRouteWithChildren
   '/coiffure-afro': typeof CoiffureAfroRoute
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
@@ -82,11 +81,11 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/boutique/': typeof BoutiqueIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/boutique': typeof BoutiqueRouteWithChildren
   '/coiffure-afro': typeof CoiffureAfroRoute
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
@@ -94,12 +93,12 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/boutique': typeof BoutiqueIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/boutique': typeof BoutiqueRouteWithChildren
   '/coiffure-afro': typeof CoiffureAfroRoute
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
@@ -107,13 +106,13 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/boutique/': typeof BoutiqueIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/a-propos'
-    | '/boutique'
     | '/coiffure-afro'
     | '/contact'
     | '/perruques-medicalisees'
@@ -121,11 +120,11 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/boutique/$productSlug'
     | '/admin/'
+    | '/boutique/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/a-propos'
-    | '/boutique'
     | '/coiffure-afro'
     | '/contact'
     | '/perruques-medicalisees'
@@ -133,11 +132,11 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/boutique/$productSlug'
     | '/admin'
+    | '/boutique'
   id:
     | '__root__'
     | '/'
     | '/a-propos'
-    | '/boutique'
     | '/coiffure-afro'
     | '/contact'
     | '/perruques-medicalisees'
@@ -145,18 +144,20 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/boutique/$productSlug'
     | '/admin/'
+    | '/boutique/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
-  BoutiqueRoute: typeof BoutiqueRouteWithChildren
   CoiffureAfroRoute: typeof CoiffureAfroRoute
   ContactRoute: typeof ContactRoute
   PerruquesMedicaliseesRoute: typeof PerruquesMedicaliseesRoute
   ReservationRoute: typeof ReservationRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  BoutiqueProductSlugRoute: typeof BoutiqueProductSlugRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  BoutiqueIndexRoute: typeof BoutiqueIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -189,13 +190,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoiffureAfroRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/boutique': {
-      id: '/boutique'
-      path: '/boutique'
-      fullPath: '/boutique'
-      preLoaderRoute: typeof BoutiqueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/a-propos': {
       id: '/a-propos'
       path: '/a-propos'
@@ -210,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/boutique/': {
+      id: '/boutique/'
+      path: '/boutique'
+      fullPath: '/boutique/'
+      preLoaderRoute: typeof BoutiqueIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -219,10 +220,10 @@ declare module '@tanstack/react-router' {
     }
     '/boutique/$productSlug': {
       id: '/boutique/$productSlug'
-      path: '/$productSlug'
+      path: '/boutique/$productSlug'
       fullPath: '/boutique/$productSlug'
       preLoaderRoute: typeof BoutiqueProductSlugRouteImport
-      parentRoute: typeof BoutiqueRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
       id: '/admin/login'
@@ -234,29 +235,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface BoutiqueRouteChildren {
-  BoutiqueProductSlugRoute: typeof BoutiqueProductSlugRoute
-}
-
-const BoutiqueRouteChildren: BoutiqueRouteChildren = {
-  BoutiqueProductSlugRoute: BoutiqueProductSlugRoute,
-}
-
-const BoutiqueRouteWithChildren = BoutiqueRoute._addFileChildren(
-  BoutiqueRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
-  BoutiqueRoute: BoutiqueRouteWithChildren,
   CoiffureAfroRoute: CoiffureAfroRoute,
   ContactRoute: ContactRoute,
   PerruquesMedicaliseesRoute: PerruquesMedicaliseesRoute,
   ReservationRoute: ReservationRoute,
   AdminLoginRoute: AdminLoginRoute,
+  BoutiqueProductSlugRoute: BoutiqueProductSlugRoute,
   AdminIndexRoute: AdminIndexRoute,
+  BoutiqueIndexRoute: BoutiqueIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
