@@ -147,6 +147,26 @@ function ProductPage() {
               <dt className="text-muted-foreground">Longueur</dt>
               <dd className="mt-0.5 font-medium">{product.length}</dd>
             </div>
+            {product.medical && (
+              <>
+                <div>
+                  <dt className="text-muted-foreground">Couleur</dt>
+                  <dd className="mt-0.5 font-medium">{product.medical.color}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Style</dt>
+                  <dd className="mt-0.5 font-medium">{product.medical.style}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Densité</dt>
+                  <dd className="mt-0.5 font-medium">{product.medical.density}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Monture</dt>
+                  <dd className="mt-0.5 font-medium">{product.medical.cap}</dd>
+                </div>
+              </>
+            )}
           </dl>
 
           {product.highlights.length > 0 && (
