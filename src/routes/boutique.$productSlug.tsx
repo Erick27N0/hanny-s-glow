@@ -244,7 +244,7 @@ function ProductPage() {
             <UserCheck className="h-6 w-6 text-primary" />
             <h2 className="mt-3 font-serif text-lg">Pour qui ?</h2>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {product.medical.bestFor.map((b) => (
+              {product.medical.bestFor.map((b: string) => (
                 <li key={b} className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                   <span>{b}</span>
@@ -256,7 +256,7 @@ function ProductPage() {
             <Sparkles className="h-6 w-6 text-primary" />
             <h2 className="mt-3 font-serif text-lg">Morphologies adaptées</h2>
             <div className="mt-3 flex flex-wrap gap-2">
-              {product.medical.faceShapes.map((f) => (
+              {product.medical.faceShapes.map((f: string) => (
                 <Badge key={f} variant="secondary">{f}</Badge>
               ))}
             </div>
@@ -268,7 +268,7 @@ function ProductPage() {
             <Package className="h-6 w-6 text-primary" />
             <h2 className="mt-3 font-serif text-lg">Inclus dans la prestation</h2>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {product.medical.included.map((i) => (
+              {product.medical.included.map((i: string) => (
                 <li key={i} className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                   <span>{i}</span>
@@ -280,7 +280,7 @@ function ProductPage() {
             <Droplets className="h-6 w-6 text-primary" />
             <h2 className="mt-3 font-serif text-lg">Conseils d'entretien</h2>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {product.medical.care.map((c) => (
+              {product.medical.care.map((c: string) => (
                 <li key={c} className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                   <span>{c}</span>
