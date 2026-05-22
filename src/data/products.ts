@@ -3,6 +3,18 @@ import wig2 from "@/assets/product-wig-2.jpg";
 import extensions from "@/assets/product-extensions.jpg";
 import care from "@/assets/product-care.jpg";
 
+export type MedicalDetails = {
+  color: string;
+  colorFamily: "Brun" | "Châtain" | "Blond" | "Noir" | "Roux";
+  style: "Lisse" | "Ondulée" | "Bouclée" | "Frisée";
+  cap: string;
+  density: "Légère" | "Moyenne" | "Dense";
+  faceShapes: string[];
+  bestFor: string[];
+  included: string[];
+  care: string[];
+};
+
 export type Product = {
   slug: string;
   name: string;
@@ -15,6 +27,7 @@ export type Product = {
   inStock: boolean;
   image: string;
   highlights: string[];
+  medical?: MedicalDetails;
 };
 
 export const products: Product[] = [
@@ -31,6 +44,29 @@ export const products: Product[] = [
     inStock: true,
     image: wig1,
     highlights: ["Éligible Sécu", "Lace front", "Monture respirante", "Pose offerte"],
+    medical: {
+      color: "Châtain naturel",
+      colorFamily: "Châtain",
+      style: "Lisse",
+      cap: "Lace front + monture confort réglable (51 à 56 cm)",
+      density: "Moyenne",
+      faceShapes: ["Ovale", "Rond", "Cœur"],
+      bestFor: [
+        "Premier port après chimiothérapie",
+        "Recherche d'un rendu discret et naturel",
+      ],
+      included: [
+        "Essayage privé d'1h en cabine dédiée",
+        "Ajustement & coupe personnalisée",
+        "Pose offerte le jour de la livraison",
+        "Tiers payant Sécu pris en charge",
+      ],
+      care: [
+        "Lavage doux tous les 10 à 15 ports",
+        "Sèche à l'air libre sur tête polystyrène",
+        "Brossage avec peigne à dents larges uniquement",
+      ],
+    },
   },
   {
     slug: "perruque-medicale-bouclee",
@@ -45,6 +81,29 @@ export const products: Product[] = [
     inStock: true,
     image: wig2,
     highlights: ["Éligible Sécu", "Texture afro", "Monture hypoallergénique"],
+    medical: {
+      color: "Noir naturel",
+      colorFamily: "Noir",
+      style: "Bouclée",
+      cap: "Monture hypoallergénique stretch (tailles S/M/L)",
+      density: "Dense",
+      faceShapes: ["Ovale", "Carré", "Long"],
+      bestFor: [
+        "Texture afro 3C/4A préservée",
+        "Volume immédiat sans coiffage quotidien",
+      ],
+      included: [
+        "Essayage privé d'1h",
+        "Démêlage & shaping personnalisé",
+        "Pose offerte",
+        "Tiers payant Sécu",
+      ],
+      care: [
+        "Hydratation hebdomadaire (spray leave-in)",
+        "Bonnet satin la nuit recommandé",
+        "Pas de fer chaud > 150 °C",
+      ],
+    },
   },
   {
     slug: "perruque-medicale-courte-carre",
@@ -59,6 +118,29 @@ export const products: Product[] = [
     inStock: true,
     image: wig1,
     highlights: ["Éligible Sécu", "Lace front", "Léger", "Entretien facile"],
+    medical: {
+      color: "Brun chocolat",
+      colorFamily: "Brun",
+      style: "Lisse",
+      cap: "Lace front + monture ultra-légère (< 90 g)",
+      density: "Légère",
+      faceShapes: ["Ovale", "Cœur", "Long"],
+      bestFor: [
+        "Port quotidien actif (travail, sport doux)",
+        "Climat chaud, recherche de légèreté",
+      ],
+      included: [
+        "Essayage privé d'1h",
+        "Coupe personnalisée",
+        "Pose offerte",
+        "Tiers payant Sécu",
+      ],
+      care: [
+        "Brushing facile à la brosse plate",
+        "Lavage tous les 12 à 15 ports",
+        "Spray thermo-protecteur si fer < 160 °C",
+      ],
+    },
   },
   {
     slug: "perruque-medicale-longue-frange",
@@ -73,6 +155,29 @@ export const products: Product[] = [
     inStock: true,
     image: wig2,
     highlights: ["Éligible Sécu", "Frange dégradée", "Monture respirante", "Pose offerte"],
+    medical: {
+      color: "Brun foncé reflets cuivrés",
+      colorFamily: "Brun",
+      style: "Lisse",
+      cap: "Monture confort respirante, raie multidirectionnelle",
+      density: "Moyenne",
+      faceShapes: ["Ovale", "Carré", "Cœur"],
+      bestFor: [
+        "Envie de longueur et de féminité",
+        "Camoufler une ligne de front fragilisée",
+      ],
+      included: [
+        "Essayage privé d'1h",
+        "Ajustement de la frange",
+        "Pose offerte",
+        "Tiers payant Sécu",
+      ],
+      care: [
+        "Démêlage quotidien doux à la brosse Wet",
+        "Masque nourrissant 1× / semaine",
+        "Tresser la nuit pour préserver les pointes",
+      ],
+    },
   },
   {
     slug: "perruque-medicale-chatain-miel",
@@ -87,6 +192,29 @@ export const products: Product[] = [
     inStock: true,
     image: wig1,
     highlights: ["Éligible Sécu", "Reflets dorés", "Monture hypoallergénique"],
+    medical: {
+      color: "Châtain miel reflets dorés",
+      colorFamily: "Blond",
+      style: "Ondulée",
+      cap: "Monture hypoallergénique stretch",
+      density: "Moyenne",
+      faceShapes: ["Ovale", "Rond", "Cœur"],
+      bestFor: [
+        "Carnation chaude, envie de lumière",
+        "Look naturel sans entretien colorimétrique",
+      ],
+      included: [
+        "Essayage privé d'1h",
+        "Conseil colorimétrie",
+        "Pose offerte",
+        "Tiers payant Sécu",
+      ],
+      care: [
+        "Pas de coloration sur fibre synthétique",
+        "Brossage doux après chaque port",
+        "Spray démêlant spécifique fibres",
+      ],
+    },
   },
   {
     slug: "extensions-wavy-bundles",
