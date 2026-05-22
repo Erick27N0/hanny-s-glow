@@ -3,6 +3,18 @@ import wig2 from "@/assets/product-wig-2.jpg";
 import extensions from "@/assets/product-extensions.jpg";
 import care from "@/assets/product-care.jpg";
 
+export type MedicalDetails = {
+  color: string;
+  colorFamily: "Brun" | "Châtain" | "Blond" | "Noir" | "Roux";
+  style: "Lisse" | "Ondulée" | "Bouclée" | "Frisée";
+  cap: string;
+  density: "Légère" | "Moyenne" | "Dense";
+  faceShapes: string[];
+  bestFor: string[];
+  included: string[];
+  care: string[];
+};
+
 export type Product = {
   slug: string;
   name: string;
@@ -15,6 +27,7 @@ export type Product = {
   inStock: boolean;
   image: string;
   highlights: string[];
+  medical?: MedicalDetails;
 };
 
 export const products: Product[] = [
