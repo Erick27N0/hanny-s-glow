@@ -17,6 +17,7 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BoutiqueIndexRouteImport } from './routes/boutique.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as CoiffureAfroServiceIdRouteImport } from './routes/coiffure-afro.$serviceId'
 import { Route as BoutiqueProductSlugRouteImport } from './routes/boutique.$productSlug'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
@@ -60,6 +61,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoiffureAfroServiceIdRoute = CoiffureAfroServiceIdRouteImport.update({
+  id: '/$serviceId',
+  path: '/$serviceId',
+  getParentRoute: () => CoiffureAfroRoute,
+} as any)
 const BoutiqueProductSlugRoute = BoutiqueProductSlugRouteImport.update({
   id: '/boutique/$productSlug',
   path: '/boutique/$productSlug',
@@ -74,24 +80,26 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/coiffure-afro': typeof CoiffureAfroRoute
+  '/coiffure-afro': typeof CoiffureAfroRouteWithChildren
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
   '/reservation': typeof ReservationRoute
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
+  '/coiffure-afro/$serviceId': typeof CoiffureAfroServiceIdRoute
   '/admin/': typeof AdminIndexRoute
   '/boutique/': typeof BoutiqueIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/coiffure-afro': typeof CoiffureAfroRoute
+  '/coiffure-afro': typeof CoiffureAfroRouteWithChildren
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
   '/reservation': typeof ReservationRoute
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
+  '/coiffure-afro/$serviceId': typeof CoiffureAfroServiceIdRoute
   '/admin': typeof AdminIndexRoute
   '/boutique': typeof BoutiqueIndexRoute
 }
@@ -99,12 +107,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/coiffure-afro': typeof CoiffureAfroRoute
+  '/coiffure-afro': typeof CoiffureAfroRouteWithChildren
   '/contact': typeof ContactRoute
   '/perruques-medicalisees': typeof PerruquesMedicaliseesRoute
   '/reservation': typeof ReservationRoute
   '/admin/login': typeof AdminLoginRoute
   '/boutique/$productSlug': typeof BoutiqueProductSlugRoute
+  '/coiffure-afro/$serviceId': typeof CoiffureAfroServiceIdRoute
   '/admin/': typeof AdminIndexRoute
   '/boutique/': typeof BoutiqueIndexRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/reservation'
     | '/admin/login'
     | '/boutique/$productSlug'
+    | '/coiffure-afro/$serviceId'
     | '/admin/'
     | '/boutique/'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/reservation'
     | '/admin/login'
     | '/boutique/$productSlug'
+    | '/coiffure-afro/$serviceId'
     | '/admin'
     | '/boutique'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/reservation'
     | '/admin/login'
     | '/boutique/$productSlug'
+    | '/coiffure-afro/$serviceId'
     | '/admin/'
     | '/boutique/'
   fileRoutesById: FileRoutesById
@@ -150,7 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
-  CoiffureAfroRoute: typeof CoiffureAfroRoute
+  CoiffureAfroRoute: typeof CoiffureAfroRouteWithChildren
   ContactRoute: typeof ContactRoute
   PerruquesMedicaliseesRoute: typeof PerruquesMedicaliseesRoute
   ReservationRoute: typeof ReservationRoute
@@ -218,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coiffure-afro/$serviceId': {
+      id: '/coiffure-afro/$serviceId'
+      path: '/$serviceId'
+      fullPath: '/coiffure-afro/$serviceId'
+      preLoaderRoute: typeof CoiffureAfroServiceIdRouteImport
+      parentRoute: typeof CoiffureAfroRoute
+    }
     '/boutique/$productSlug': {
       id: '/boutique/$productSlug'
       path: '/boutique/$productSlug'
@@ -235,10 +254,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CoiffureAfroRouteChildren {
+  CoiffureAfroServiceIdRoute: typeof CoiffureAfroServiceIdRoute
+}
+
+const CoiffureAfroRouteChildren: CoiffureAfroRouteChildren = {
+  CoiffureAfroServiceIdRoute: CoiffureAfroServiceIdRoute,
+}
+
+const CoiffureAfroRouteWithChildren = CoiffureAfroRoute._addFileChildren(
+  CoiffureAfroRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
-  CoiffureAfroRoute: CoiffureAfroRoute,
+  CoiffureAfroRoute: CoiffureAfroRouteWithChildren,
   ContactRoute: ContactRoute,
   PerruquesMedicaliseesRoute: PerruquesMedicaliseesRoute,
   ReservationRoute: ReservationRoute,
