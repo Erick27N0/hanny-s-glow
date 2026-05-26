@@ -43,19 +43,34 @@ function AfroPage() {
       <section className="container mx-auto px-4 py-12 md:px-6 md:py-16">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
-            <Card key={s.id} className="flex flex-col p-6">
-              <Badge variant="secondary" className="w-fit">{s.category}</Badge>
-              <h2 className="mt-3 font-serif text-xl">{s.name}</h2>
-              <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.description}</p>
-              <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <Clock className="h-4 w-4" /> {formatDuration(s.durationMinutes)}
-                </span>
-                <span className="flex items-center gap-1.5 font-medium text-foreground">
-                  <Tag className="h-4 w-4 text-primary" /> à partir de {s.priceFrom} €
-                </span>
-              </div>
-            </Card>
+            <Link
+              key={s.id}
+              to="/coiffure-afro/$serviceId"
+              params={{ serviceId: s.id }}
+              className="group block"
+            >
+              <Card className="flex h-full flex-col overflow-hidden p-0 transition hover:border-primary">
+                <img
+                  src={s.image}
+                  alt={s.name}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover transition group-hover:scale-[1.02]"
+                />
+                <div className="flex flex-1 flex-col p-6">
+                  <Badge variant="secondary" className="w-fit">{s.category}</Badge>
+                  <h2 className="mt-3 font-serif text-xl group-hover:text-primary">{s.name}</h2>
+                  <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.description}</p>
+                  <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
+                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                      <Clock className="h-4 w-4" /> {formatDuration(s.durationMinutes)}
+                    </span>
+                    <span className="flex items-center gap-1.5 font-medium text-foreground">
+                      <Tag className="h-4 w-4 text-primary" /> à partir de {s.priceFrom} €
+                    </span>
+                  </div>
+                </div>
+              </Card>
+            </Link>
           ))}
         </div>
 
