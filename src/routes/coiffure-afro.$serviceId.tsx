@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getServiceById, formatDuration, services } from "@/data/services";
+import { getServiceById, formatDuration, services, type Service } from "@/data/services";
 
 export const Route = createFileRoute("/coiffure-afro/$serviceId")({
   loader: ({ params }) => {
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/coiffure-afro/$serviceId")({
 });
 
 function ServiceDetailPage() {
-  const { service: s } = Route.useLoaderData();
+  const { service: s } = Route.useLoaderData() as { service: Service };
   const related = services.filter(
     (x) => x.category === s.category && x.id !== s.id
   ).slice(0, 3);
