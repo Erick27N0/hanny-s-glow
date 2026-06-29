@@ -205,39 +205,149 @@ function ReservationPage() {
     return false;
   };
 
-  if (confirmed && selectedSlot) {
+  if (confirmed) {
+    const { start, end, fullName, email, phone, productName } = confirmed;
+    const dateLabel = start.toLocaleDateString("fr-FR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const timeLabel = `${start.toLocaleTimeString("fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })} – ${end.toLocaleTimeString("fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
+    const location = "Hanny Tresse, Perpignan";
+    const eventDescription =
+      `Essayage perruque médicalisée chez Hanny Tresse.\n` +
+      (productName ? `Modèle souhaité : ${productName}\n` : "") +
+      `Client : ${fullName} (${email} · ${phone})\n` +
+      `Demande à confirmer par le salon sous 24h ouvrées.`;
+    const ev: CalendarEvent = {
+      title: productName
+        ? `Essayage perruque – ${productName} – Hanny Tresse`
+        : "Essayage perruque médicalisée – Hanny Tresse",
+      description: eventDescription,
+      location,
+      start,
+      end,
+    };
+
     return (
-      <section className="container mx-auto px-4 py-20 md:px-6">
-        <div className="mx-auto max-w-xl rounded-3xl border border-border bg-card p-10 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Check className="h-7 w-7" />
+      <section className="container mx-auto px-4 py-14 md:px-6 md:py-20">
+        <div className="mx-auto max-w-2xl rounded-3xl border border-border bg-card p-8 md:p-10">
+          <div className="text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Check className="h-7 w-7" />
+            </div>
+            <h1 className="mt-5 font-serif text-3xl md:text-4xl">
+              Demande enregistrée
+            </h1>
+            <p className="mt-3 text-muted-foreground">
+              Nous vous recontactons sous 24h ouvrées pour confirmer votre
+              rendez-vous. Un récapitulatif est disponible ci-dessous.
+            </p>
           </div>
-          <h1 className="mt-5 font-serif text-3xl">Demande enregistrée</h1>
-          <p className="mt-3 text-muted-foreground">
-            Votre demande pour le{" "}
-            <strong>
-              {selectedSlot.toLocaleDateString("fr-FR", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              })}{" "}
-              à{" "}
-              {selectedSlot.toLocaleTimeString("fr-FR", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </strong>{" "}
-            a bien été reçue. Nous vous recontactons sous 24h ouvrées pour
-            confirmer votre rendez-vous.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button asChild>
-              <Link to="/perruques-medicalisees">Retour</Link>
+
+          <div className="mt-8 overflow-hidden rounded-2xl border border-border">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+              Récapitulatif
+            </div>
+            <dl className="divide-y divide-border text-sm">
+              <div className="flex items-start gap-4 px-5 py-3">
+                <dt className="w-28 flex-shrink-0 text-muted-foreground">
+                  Prestation
+                </dt>
+                <dd className="font-medium">
+                  Essayage perruque médicalisée (1h)
+                </dd>
+              </div>
+              {productName && (
+                <div className="flex items-start gap-4 px-5 py-3">
+                  <dt className="w-28 flex-shrink-0 text-muted-foreground">
+                    Modèle
+                  </dt>
+                  <dd className="font-medium">{productName}</dd>
+                </div>
+              )}
+              <div className="flex items-start gap-4 px-5 py-3">
+                <dt className="w-28 flex-shrink-0 text-muted-foreground">
+                  Date
+                </dt>
+                <dd className="font-medium capitalize">{dateLabel}</dd>
+              </div>
+              <div className="flex items-start gap-4 px-5 py-3">
+                <dt className="w-28 flex-shrink-0 text-muted-foreground">
+                  Horaire
+                </dt>
+                <dd className="font-medium">{timeLabel}</dd>
+              </div>
+              <div className="flex items-start gap-4 px-5 py-3">
+                <dt className="w-28 flex-shrink-0 text-muted-foreground">
+                  Lieu
+                </dt>
+                <dd className="flex items-center gap-1.5 font-medium">
+                  <MapPin className="h-3.5 w-3.5 text-primary" /> {location}
+                </dd>
+              </div>
+              <div className="flex items-start gap-4 px-5 py-3">
+                <dt className="w-28 flex-shrink-0 text-muted-foreground">
+                  Client
+                </dt>
+                <dd>
+                  <div className="font-medium">{fullName}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {email} · {phone}
+                  </div>
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+            <p className="text-xs uppercase tracking-wider text-primary">
+              Ajouter à votre agenda
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Bloquez le créneau le temps que le salon confirme.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                onClick={() => downloadICS("rendez-vous-hanny-tresse.ics", ev)}
+              >
+                <Download className="mr-1 h-4 w-4" />
+                Fichier .ics (Apple, Outlook…)
+              </Button>
+              <Button size="sm" variant="outline" asChild>
+                <a
+                  href={googleCalendarUrl(ev)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <CalendarPlus className="mr-1 h-4 w-4" />
+                  Google Agenda
+                </a>
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button asChild variant="outline">
+              <Link to="/perruques-medicalisees">Voir les perruques</Link>
             </Button>
-            <Button variant="outline" asChild>
-              <Link to="/">Accueil</Link>
+            <Button asChild variant="ghost">
+              <Link to="/">Retour à l'accueil</Link>
             </Button>
           </div>
+        </div>
+      </section>
+    );
+  }
+
         </div>
       </section>
     );
