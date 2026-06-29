@@ -6,7 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { CalendarDays, Check, ShieldCheck } from "lucide-react";
+import { CalendarDays, Check, ShieldCheck, Sparkles } from "lucide-react";
+import { getProductBySlug } from "@/data/products";
+
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
