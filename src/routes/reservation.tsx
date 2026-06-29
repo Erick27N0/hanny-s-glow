@@ -6,7 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { CalendarDays, Check, ShieldCheck } from "lucide-react";
+import { CalendarDays, Check, ShieldCheck, Sparkles } from "lucide-react";
+import { getProductBySlug } from "@/data/products";
+
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +23,9 @@ import {
 } from "@/lib/booking.functions";
 
 export const Route = createFileRoute("/reservation")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    modele: typeof search.modele === "string" ? search.modele : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Réserver un essayage — Perruques médicalisées Hanny Tresse" },
@@ -42,6 +47,7 @@ export const Route = createFileRoute("/reservation")({
   }),
   component: ReservationPage,
 });
+
 
 // ===== Slot helpers =====
 const HOURS = [10, 11, 12, 13, 14, 15, 16, 17]; // créneaux toutes les heures pleines, 10h-17h (dernier RDV à 17h, fin 18h)
@@ -77,6 +83,16 @@ function ReservationPage() {
   const fetchBusy = useServerFn(getBusySlots);
   const fetchClosed = useServerFn(getClosedDates);
   const submit = useServerFn(createBooking);
+  const { modele } = Route.useSearch();
+  const selectedProduct = useMemo(
+    () => (modele ? getProductBySlug(modele) : undefined),
+    [modele]
+  );
+  const prefilledNotes = selectedProduct
+    ? `Modèle souhaité : ${selectedProduct.name} (${selectedProduct.length})`
+    : "";
+
+
 
   const today = useMemo(() => {
     const d = new Date();
@@ -132,7 +148,11 @@ function ReservationPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(formSchema) });
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { notes: prefilledNotes },
+  });
+
 
   const onSubmit = async (values: FormValues) => {
     if (!selectedSlot) {
@@ -217,6 +237,35 @@ function ReservationPage() {
           Choisissez un créneau d'1 heure, du mardi au samedi entre 10h et 18h.
           Votre demande est validée par le salon sous 24h ouvrées.
         </p>
+
+        {selectedProduct && (
+          <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center">
+            <img
+              src={selectedProduct.image}
+              alt={selectedProduct.name}
+              className="h-20 w-20 flex-shrink-0 rounded-xl object-cover"
+              loading="lazy"
+            />
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-primary">
+                <Sparkles className="h-3 w-3" /> Modèle pré-sélectionné
+              </div>
+              <p className="mt-1 font-serif text-lg">{selectedProduct.name}</p>
+              <p className="text-sm text-muted-foreground">
+                {selectedProduct.length} · {selectedProduct.hairType} · à partir
+                de {selectedProduct.price} €
+              </p>
+            </div>
+            <Link
+              to="/perruques-medicalisees"
+              className="text-xs text-muted-foreground underline hover:text-primary"
+            >
+              Changer
+            </Link>
+          </div>
+        )}
+
+
 
         <div className="mt-10 grid gap-8 md:grid-cols-2">
           {/* Calendrier + créneaux */}
