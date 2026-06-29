@@ -238,6 +238,35 @@ function ReservationPage() {
           Votre demande est validée par le salon sous 24h ouvrées.
         </p>
 
+        {selectedProduct && (
+          <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center">
+            <img
+              src={selectedProduct.image}
+              alt={selectedProduct.name}
+              className="h-20 w-20 flex-shrink-0 rounded-xl object-cover"
+              loading="lazy"
+            />
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-primary">
+                <Sparkles className="h-3 w-3" /> Modèle pré-sélectionné
+              </div>
+              <p className="mt-1 font-serif text-lg">{selectedProduct.name}</p>
+              <p className="text-sm text-muted-foreground">
+                {selectedProduct.length} · {selectedProduct.hairType} · à partir
+                de {selectedProduct.price} €
+              </p>
+            </div>
+            <Link
+              to="/perruques-medicalisees"
+              className="text-xs text-muted-foreground underline hover:text-primary"
+            >
+              Changer
+            </Link>
+          </div>
+        )}
+
+
+
         <div className="mt-10 grid gap-8 md:grid-cols-2">
           {/* Calendrier + créneaux */}
           <div className="rounded-3xl border border-border bg-card p-5">
