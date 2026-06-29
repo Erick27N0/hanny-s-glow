@@ -179,7 +179,15 @@ function ReservationPage() {
           notes: values.notes || "",
         },
       });
-      setConfirmed(true);
+      const end = new Date(selectedSlot.getTime() + 60 * 60 * 1000);
+      setConfirmed({
+        start: selectedSlot,
+        end,
+        fullName: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        productName: selectedProduct?.name,
+      });
       reset();
     } catch (err) {
       toast.error("Réservation impossible", {
@@ -187,6 +195,7 @@ function ReservationPage() {
       });
     }
   };
+
 
   const disabledDays = (d: Date) => {
     if (d < today) return true;
