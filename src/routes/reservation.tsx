@@ -23,6 +23,9 @@ import {
 } from "@/lib/booking.functions";
 
 export const Route = createFileRoute("/reservation")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    modele: typeof search.modele === "string" ? search.modele : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Réserver un essayage — Perruques médicalisées Hanny Tresse" },
@@ -44,6 +47,7 @@ export const Route = createFileRoute("/reservation")({
   }),
   component: ReservationPage,
 });
+
 
 // ===== Slot helpers =====
 const HOURS = [10, 11, 12, 13, 14, 15, 16, 17]; // créneaux toutes les heures pleines, 10h-17h (dernier RDV à 17h, fin 18h)
