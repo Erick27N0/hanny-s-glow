@@ -133,7 +133,15 @@ function ReservationPage() {
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedSlot, setSelectedSlot] = useState<Date | undefined>(undefined);
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed, setConfirmed] = useState<{
+    start: Date;
+    end: Date;
+    fullName: string;
+    email: string;
+    phone: string;
+    productName?: string;
+  } | null>(null);
+
 
   const slotsForDay = useMemo(() => {
     if (!selectedDate) return [];
