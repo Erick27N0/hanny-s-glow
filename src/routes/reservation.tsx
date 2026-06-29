@@ -348,10 +348,7 @@ function ReservationPage() {
     );
   }
 
-        </div>
-      </section>
-    );
-  }
+
 
   return (
     <section className="container mx-auto px-4 py-14 md:px-6 md:py-20">
