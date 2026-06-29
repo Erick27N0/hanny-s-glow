@@ -148,7 +148,11 @@ function ReservationPage() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(formSchema) });
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { notes: prefilledNotes },
+  });
+
 
   const onSubmit = async (values: FormValues) => {
     if (!selectedSlot) {
