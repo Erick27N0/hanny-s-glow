@@ -83,6 +83,16 @@ function ReservationPage() {
   const fetchBusy = useServerFn(getBusySlots);
   const fetchClosed = useServerFn(getClosedDates);
   const submit = useServerFn(createBooking);
+  const { modele } = Route.useSearch();
+  const selectedProduct = useMemo(
+    () => (modele ? getProductBySlug(modele) : undefined),
+    [modele]
+  );
+  const prefilledNotes = selectedProduct
+    ? `Modèle souhaité : ${selectedProduct.name} (${selectedProduct.length})`
+    : "";
+
+
 
   const today = useMemo(() => {
     const d = new Date();
