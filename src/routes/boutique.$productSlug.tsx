@@ -182,10 +182,11 @@ function ProductPage() {
           {isMedical && (
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               <Button asChild size="lg">
-                <Link to="/reservation">
+                <Link to="/reservation" search={{ modele: product.slug }}>
                   <CalendarDays className="mr-1 h-4 w-4" /> Réserver un essayage
                 </Link>
               </Button>
+
               <Button asChild variant="outline" size="lg">
                 <a href="#question-modele">Poser une question</a>
               </Button>
