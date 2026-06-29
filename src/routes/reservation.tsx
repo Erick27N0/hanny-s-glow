@@ -6,8 +6,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { CalendarDays, Check, ShieldCheck, Sparkles } from "lucide-react";
+import { CalendarDays, Check, ShieldCheck, Sparkles, Download, CalendarPlus, MapPin } from "lucide-react";
 import { getProductBySlug } from "@/data/products";
+import { downloadICS, googleCalendarUrl, type CalendarEvent } from "@/lib/ics";
+
 
 
 import { Button } from "@/components/ui/button";
