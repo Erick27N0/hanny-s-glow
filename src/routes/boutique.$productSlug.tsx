@@ -306,10 +306,11 @@ function ProductPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <Link to="/reservation">
+              <Link to="/reservation" search={{ modele: product.slug }}>
                 <CalendarDays className="mr-1 h-4 w-4" /> Réserver un essayage
               </Link>
             </Button>
+
             <Button asChild variant="outline" size="lg">
               <Link to="/perruques-medicalisees">Voir les autres modèles</Link>
             </Button>
